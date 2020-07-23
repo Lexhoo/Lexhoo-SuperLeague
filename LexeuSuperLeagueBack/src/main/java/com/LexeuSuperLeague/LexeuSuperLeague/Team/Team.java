@@ -2,6 +2,9 @@ package com.LexeuSuperLeague.LexeuSuperLeague.Team;
 
 
 import com.LexeuSuperLeague.LexeuSuperLeague.Player.Player;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.sql.Blob;
@@ -13,6 +16,14 @@ public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long team_id;
+
+    @OneToMany (mappedBy = "team")
+    @JsonIdentityInfo(
+            scope = Team.class,
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+        @JsonIdentityReference(alwaysAsId = true)
+    List<Player> playerList;
 
     @Column(name = "city")
     private String city;
@@ -43,14 +54,12 @@ public class Team {
     @Column(name = "photo")
     private Blob photo;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.REFRESH)
-    private List<Player> players;
+
 
     public Team() {
     }
 
-    public Team(Long id, String city, String name, String stadium, int created, int numberoftitle, String coach, String website, String adress, Blob photo, List<Player> players) {
-        this.team_id = team_id;
+    public Team(Long team_id, String city, String name, String stadium, int created, int numberoftitle, String coach, String website, String adress, Blob photo) {
         this.city = city;
         this.name = name;
         this.stadium = stadium;
@@ -60,7 +69,6 @@ public class Team {
         this.website = website;
         this.adress = adress;
         this.photo = photo;
-        this.players = players;
     }
 
 
@@ -144,11 +152,5 @@ public class Team {
         this.photo = photo;
     }
 
-    public List<Player> getPlayers() {
-        return players;
-    }
 
-    public void setPlayers(List<Player> players) {
-        this.players = players;
-    }
 }

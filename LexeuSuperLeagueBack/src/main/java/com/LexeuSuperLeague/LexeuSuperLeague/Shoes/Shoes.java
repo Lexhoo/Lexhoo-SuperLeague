@@ -11,12 +11,10 @@ import java.util.List;
 public class Shoes {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    /**
-     * un modèle de chaussures peut être porté par plusieurs joueurs.
-     */
+
     @ManyToMany(mappedBy = "shoesList")
     private List<Player> playerList = new ArrayList<>();
 

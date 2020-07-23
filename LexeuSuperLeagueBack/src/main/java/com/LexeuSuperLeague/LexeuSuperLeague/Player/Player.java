@@ -2,6 +2,9 @@ package com.LexeuSuperLeague.LexeuSuperLeague.Player;
 
 import com.LexeuSuperLeague.LexeuSuperLeague.Shoes.Shoes;
 import com.LexeuSuperLeague.LexeuSuperLeague.Team.Team;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.sql.Blob;
@@ -12,7 +15,7 @@ import java.util.List;
 public class Player {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String firstname;
@@ -31,24 +34,32 @@ public class Player {
 
     private String videolink;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH, optional = false)
-    @JoinColumn(name = "team_id", nullable = false)
-    private Team team;
 
     public Player() {
     }
 
-    /**
-     * Un joueur peut avoir plusieurs modèles de chaussures.
-     */
+    @ManyToOne
+    @JsonIdentityInfo(
+            scope = Player.class,
+            generator = ObjectIdGenerators.PropertyGenerator.class,
+            property = "id")
+    @JsonIdentityReference(alwaysAsId = true)
+    Team team;
 
     @ManyToMany
     @JoinTable(name = "player_shoes",
-    joinColumns = @JoinColumn(name = "player_id"),
-    inverseJoinColumns = @JoinColumn(name = "shoes_id"))
+            joinColumns = @JoinColumn(name = "player_id"),
+            inverseJoinColumns = @JoinColumn(name = "shoes_id"))
     private List<Shoes> shoesList = new ArrayList<>();
 
 
+    public List<Shoes> getShoesList() {
+        return shoesList;
+    }
+
+    public void setShoesList(List<Shoes> shoesList) {
+        this.shoesList = shoesList;
+    }
 
     public Long getId() {
         return id;
@@ -154,11 +165,5 @@ public class Player {
         this.videolink = videolink;
     }
 
-    public Team getTeam() {
-        return team;
-    }
 
-    public void setTeam(Team team) {
-        this.team = team;
-    }
 }
