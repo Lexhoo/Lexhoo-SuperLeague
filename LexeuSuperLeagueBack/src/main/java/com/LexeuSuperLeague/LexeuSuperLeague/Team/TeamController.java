@@ -3,8 +3,11 @@ package com.LexeuSuperLeague.LexeuSuperLeague.Team;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,30 +43,31 @@ public class TeamController {
         return teamService.create(team);
     }
 
-    @PutMapping("/put/{id}")
-    public ResponseEntity<Team> updateTutorial(@PathVariable("id") long team_id, @RequestBody Team team) {
-        Optional<Team> tutorialData = teamRepository.findById(team_id);
+    @PutMapping("update/{id}")
+    public Team updateTeam(@RequestBody Team team) {
+        return teamService.updateTeam(team);
+    }
 
-        if (tutorialData.isPresent()) {
-            Team _team = tutorialData.get();
-            _team.setName(team.getName());
-            _team.setAdress(team.getAdress());
-            _team.setCity(team.getCity());
-            _team.setCoach(team.getCoach());
-            _team.setCreated(team.getCreated());
-            _team.setNumberoftitle(team.getNumberoftitle());
-            _team.setPhoto(team.getPhoto());
-            _team.setStadium(team.getStadium());
-            _team.setWebsite(team.getWebsite());
-            return new ResponseEntity<>(teamRepository.save(_team), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @PostMapping("/update/{id}")
+    public String updateUser(@PathVariable("id") long id, @Valid Team team,
+                             BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            team.setId(id);
+            return "update-user";
         }
+
+        teamRepository.save(team);
+        model.addAttribute("teams", teamRepository.findAll());
+        return "index";
     }
 
     @DeleteMapping("delete/{id}")
-    public void deleteByName(@PathVariable Long team_id) {
-        teamService.deleteById(team_id);
+    public String deleteUser(@PathVariable("id") long id, Model model) {
+        Team team = teamRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+        teamRepository.delete(team);
+        model.addAttribute("teams", teamRepository.findAll());
+        return "index";
     }
 
     @DeleteMapping("/deleteall")
@@ -77,18 +81,6 @@ public class TeamController {
 
     }
 
-//    @GetMapping("/tutorials/published")
-//    public ResponseEntity<List<Team>> findByPublished() {
-//        try {
-//            List<Team> tutorials = teamRepository.findByPublished(true);
-//
-//            if (tutorials.isEmpty()) {
-//                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//            }
-//            return new ResponseEntity<>(tutorials, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-//        }
-//    }
+
 }
 

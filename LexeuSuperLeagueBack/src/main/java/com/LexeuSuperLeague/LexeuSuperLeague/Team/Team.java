@@ -15,7 +15,7 @@ public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long team_id;
+    private Long id;
 
     @OneToMany (mappedBy = "team")
     @JsonIdentityInfo(
@@ -59,7 +59,7 @@ public class Team {
     public Team() {
     }
 
-    public Team(Long team_id, String city, String name, String stadium, int created, int numberoftitle, String coach, String website, String adress, Blob photo) {
+    public Team(Long id, String city, String name, String stadium, int created, int numberoftitle, String coach, String website, String adress, Blob photo) {
         this.city = city;
         this.name = name;
         this.stadium = stadium;
@@ -72,12 +72,20 @@ public class Team {
     }
 
 
-    public Long getTeam_id() {
-        return team_id;
+    public Long getId() {
+        return id;
     }
 
-    public void setTeam_id(Long team_id) {
-        this.team_id = team_id;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<Player> getPlayerList() {
+        return playerList;
+    }
+
+    public void setPlayerList(List<Player> playerList) {
+        this.playerList = playerList;
     }
 
     public String getCity() {

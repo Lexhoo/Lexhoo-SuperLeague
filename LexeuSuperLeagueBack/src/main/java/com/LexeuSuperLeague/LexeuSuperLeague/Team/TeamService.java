@@ -18,7 +18,11 @@ public class TeamService {
         return teamRepository.save(team);
     }
 
-    public void deleteById (Long team_id) {
-        teamRepository.deleteById(team_id);
+    public Team updateTeam(Team team) {
+        return teamRepository.save(team);
+    }
+
+    public void deleteById (Long id) {
+        teamRepository.deleteById(id);
     }
 }

@@ -1,6 +1,7 @@
 package com.LexeuSuperLeague.LexeuSuperLeague.Shoes;
 
 import com.LexeuSuperLeague.LexeuSuperLeague.Player.Player;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Blob;
@@ -14,7 +15,7 @@ public class Shoes {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-
+    @JsonIgnore
     @ManyToMany(mappedBy = "shoesList")
     private List<Player> playerList = new ArrayList<>();
 
